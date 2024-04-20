@@ -1,0 +1,22 @@
+{
+  "type": "module",
+  "scripts": {
+    "dev": "node app",
+    "preview": "node app"
+  },
+  "imports": {
+    "#*": "./*"
+  },
+  "dependencies": {
+    "@babel/eslint-parser": "^7.24.1",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^6.9.13",
+    "pg": "^8.11.5"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0"
+  }
+}
