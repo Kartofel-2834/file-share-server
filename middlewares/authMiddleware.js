@@ -2,7 +2,7 @@
 import jwt from 'jsonwebtoken';
 
 // Logger
-import logger from '#logger/index.cjs';
+import logger from '#logger/index.js';
 
 const jwtSecret = process.env.JWT_SECRET;
 

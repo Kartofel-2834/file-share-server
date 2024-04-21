@@ -3,7 +3,7 @@ import pg from 'pg';
 import dotenv from 'dotenv';
 
 // Logger
-import logger from '#logger/index.cjs';
+import logger from '#logger/index.js';
 
 dotenv.config();
 

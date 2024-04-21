@@ -6,7 +6,7 @@ import { getObjectsIntersection } from '#utils/commonUtils.js';
 import { getSetMarkers } from '#utils/dbUtils.js';
 
 // Logger
-import logger from '#logger/index.cjs';
+import logger from '#logger/index.js';
 
 export default class DefaultRouter {
     constructor() {
@@ -36,7 +36,7 @@ export default class DefaultRouter {
                 }
 
                 logger.error(err, location || 'DefaultRouter/requestListenerWrapper');
-                res.status(500).send(message);
+                res.status(500).json(message);
             }
         };
     }

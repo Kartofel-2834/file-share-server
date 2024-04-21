@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs';
 import { validate } from '#utils/validateUtils.js';
 
 // Logger
-import logger from '#logger/index.cjs';
+import logger from '#logger/index.js';
 
 // Database Queries
 import usersQueries from '#database/queries/usersQueries.js';

@@ -2,7 +2,7 @@
 import nodemailer from 'nodemailer';
 
 // Logger
-import logger from '#logger/index.cjs';
+import logger from '#logger/index.js';
 
 const appMail = process.env.MAIL_ACCOUNT;
 const appPassword = process.env.MAIL_PASSWORD;

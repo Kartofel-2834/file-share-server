@@ -1,10 +1,13 @@
 // Node
-const fs = require('fs/promises');
-const path = require('path');
+import fs from 'fs/promises';
+import path from 'path';
+
+// Constants
+import { rootDir } from '#constants.cjs';
 
 class Logger {
     constructor() {
-        this.logFilePath = path.join(__dirname, 'data.log');
+        this.logFilePath = path.join(rootDir, 'logs', 'data.log');
     }
 
     async init() {
@@ -50,4 +53,4 @@ class Logger {
     }
 }
 
-module.exports = new Logger();
+export default new Logger();

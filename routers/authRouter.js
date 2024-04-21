@@ -6,7 +6,6 @@ import jwt from 'jsonwebtoken';
 import { generateCode } from '#utils/commonUtils.js';
 
 // Database
-// import { schema as usersSchema } from '#database/queries/usersQueries.js';
 import usersTable from '#database/tables/usersTable.js';
 
 // Default router
@@ -71,6 +70,7 @@ class AuthRouter extends DefaultRouter {
         });
     }
 
+    // Восстановление пароля
     async passwordRecovery(req, res) {
         const { login, code, new_password } = req.body;
 

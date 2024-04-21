@@ -3,11 +3,16 @@ import dotenv from 'dotenv';
 import express from 'express';
 
 // Logger
-import logger from '#logger/index.cjs';
+import logger from '#logger/index.js';
 
 // Routers
 import authRouter from '#routers/authRouter.js';
 import usersRouter from '#routers/usersRouter.js';
+import filesRouter from '#routers/filesRouter.js';
+import historyRouter from '#routers/historyRouter.js';
+
+// Middlewares
+import errorsMiddleware from '#middlewares/errorsMiddleware.js';
 
 // Database
 import usersTable from '#database/tables/usersTable.js';
@@ -24,15 +29,14 @@ app.use(express.urlencoded({
     extended: true,
 }));
 
-// Routers
+// Routers use
 app.use('/auth/', authRouter);
 app.use('/users/', usersRouter);
+app.use('/files/', filesRouter);
+app.use('/history/', historyRouter);
 
-app.post('/', (req, res) => {
-    console.log(req.body);
-
-    res.status(200).send('kamal');
-});
+// Middlewares
+app.use(errorsMiddleware);
 
 async function start() {
     await logger.init();

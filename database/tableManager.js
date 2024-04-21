@@ -1,5 +1,5 @@
 // Logger
-import logger from '#logger/index.cjs';
+import logger from '#logger/index.js';
 
 // Database
 import db from '#database/db.js';

@@ -63,7 +63,7 @@ class UsersRouter extends DefaultRouter {
         const userId = req.params?.id;
 
         if (isNaN(userId)) {
-            return res.status(400).send({
+            return res.status(400).json({
                 message: 'Request error: invalid id',
             });
         }
@@ -71,7 +71,7 @@ class UsersRouter extends DefaultRouter {
         const user = await usersTable.getById(userId);
 
         if (!user) {
-            return res.status(404).send({
+            return res.status(404).json({
                 message: 'Request error: user with that id not found',
             });
         }
@@ -105,7 +105,7 @@ class UsersRouter extends DefaultRouter {
         const userId = req.params?.id;
 
         if (isNaN(userId)) {
-            return res.status(400).send({
+            return res.status(400).json({
                 message: 'Request error: invalid id',
             });
         }
@@ -127,7 +127,7 @@ class UsersRouter extends DefaultRouter {
         const usersIds = req.body?.ids || [];
 
         if (!usersIds?.length || !Array.isArray(usersIds)) {
-            return res.status(400).send({
+            return res.status(400).json({
                 message: 'Request error: ids list not provided',
             });
         }
@@ -141,7 +141,7 @@ class UsersRouter extends DefaultRouter {
         const userId = req.params?.id;
 
         if (isNaN(userId)) {
-            return res.status(400).send({
+            return res.status(400).json({
                 message: 'Request error: invalid id',
             });
         }
@@ -149,7 +149,7 @@ class UsersRouter extends DefaultRouter {
         const [deletedUser] = await usersTable.deleteUsers([userId]);
 
         if (!deletedUser) {
-            return res.status(404).send({
+            return res.status(404).json({
                 message: 'Request error: user with that id not found',
             });
         }
