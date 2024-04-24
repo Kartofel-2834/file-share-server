@@ -77,4 +77,18 @@ export default class DefaultRouter {
 
         return { filters, values };
     }
+
+    checkIdParam(req, res) {
+        const id = req.params?.id;
+
+        if (!isNaN(id)) {
+            return id;
+        }
+
+        res.status(400).json({
+            message: 'Request error: invalid id',
+        });
+
+        return null;
+    }
 }

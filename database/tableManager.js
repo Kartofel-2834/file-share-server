@@ -50,8 +50,11 @@ export default class TableManager {
     async add(payload = {}, queryParts = returningQuery) {
         const onError = this._queryCheck('insert', 'row insert failed', 'add');
 
+        const insertion = { ...(this.$query.schema || this.validateRules) };
+        delete insertion.id;
+
         try {
-            const insertCommand = this.$query.insert(this.validateRules, queryParts);
+            const insertCommand = this.$query.insert(insertion, queryParts);
             const result = await this._validateDbRequest(insertCommand, payload, this.validateRules);
 
             return result;

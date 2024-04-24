@@ -7,6 +7,7 @@ export const schema = {
     created_at: 'TIMESTAMP NOT NULL DEFAULT NOW()',
     size: 'INTEGER',
     extenstion: 'VARCHAR(255)',
+    path: 'VARCHAR(255)',
     owner_id: 'INTEGER',
 };
 

@@ -25,27 +25,27 @@ class UsersRouter extends DefaultRouter {
 
         this.router.get('/:id', this.requestListenerWrapper({
             location: 'users/:id - GET',
-            action: this.getUserById,
+            action: (req, res) => this.getUserById(req, res),
         }));
 
         this.router.post('/', this.requestListenerWrapper({
             location: 'users - POST',
-            action: this.createUser,
+            action: (req, res) => this.createUser(req, res),
         }));
 
         this.router.delete('/', this.requestListenerWrapper({
             location: 'users - DELETE',
-            action: this.deleteUsers,
+            action: (req, res) => this.deleteUsers(req, res),
         }));
 
         this.router.delete('/:id', this.requestListenerWrapper({
             location: 'users/:id - DELETE',
-            action: this.deleteUserById,
+            action: (req, res) => this.deleteUserById(req, res),
         }));
         
         this.router.patch('/:id', this.requestListenerWrapper({
             location: 'users/:id - PATCH',
-            action: this.updateUser,
+            action: (req, res) => this.updateUser(req, res),
         }));
     }
 
@@ -60,12 +60,10 @@ class UsersRouter extends DefaultRouter {
 
     // Получение одного пользователя по его id
     async getUserById(req, res) {
-        const userId = req.params?.id;
+        const userId = this.checkIdParam(req, res);
 
-        if (isNaN(userId)) {
-            return res.status(400).json({
-                message: 'Request error: invalid id',
-            });
+        if (!userId) {
+            return;
         }
 
         const user = await usersTable.getById(userId);
@@ -102,12 +100,10 @@ class UsersRouter extends DefaultRouter {
 
     // Обновление пользователя
     async updateUser(req, res) {
-        const userId = req.params?.id;
+        const userId = this.checkIdParam(req, res);
 
-        if (isNaN(userId)) {
-            return res.status(400).json({
-                message: 'Request error: invalid id',
-            });
+        if (!userId) {
+            return;
         }
 
         const { result, errors } = await usersTable.updateUser(userId, req.body);
@@ -128,7 +124,7 @@ class UsersRouter extends DefaultRouter {
 
         if (!usersIds?.length || !Array.isArray(usersIds)) {
             return res.status(400).json({
-                message: 'Request error: ids list not provided',
+                message: 'Request error: ids list must be provided',
             });
         }
 
@@ -138,12 +134,10 @@ class UsersRouter extends DefaultRouter {
 
     // Удаление одного пользователя по его id
     async deleteUserById(req, res) {
-        const userId = req.params?.id;
+        const userId = this.checkIdParam(req, res);
 
-        if (isNaN(userId)) {
-            return res.status(400).json({
-                message: 'Request error: invalid id',
-            });
+        if (!userId) {
+            return;
         }
 
         const [deletedUser] = await usersTable.deleteUsers([userId]);
