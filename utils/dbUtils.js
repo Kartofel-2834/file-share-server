@@ -20,8 +20,8 @@ export function extractValuesArray(payload, fields = [], existOnly = false) {
  * Пример преобразования:
  * getValuesMarkers(['name', 'surname']) => ['$1', '$2']
 */
-export function getValuesMarkers(fields) {
-    return getFieldsList(fields).map((field, index) => `$${index + 1}`);
+export function getValuesMarkers(fields, offset = 0) {
+    return getFieldsList(fields).map((field, index) => `$${index + offset + 1}`);
 }
 
 /**

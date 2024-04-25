@@ -18,35 +18,47 @@ class UsersRouter extends DefaultRouter {
         ]);
 
         // Биндинг листенеров
-        this.router.get('/', this.requestListenerWrapper({
+        this.bindRoute({
+            url: '/',
+            method: 'GET',
             location: 'users - GET',
-            action: (req, res) => this.getUsers(req, res),
-        }));
+            listener: (req, res) => this.getUsers(req, res),
+        });
 
-        this.router.get('/:id', this.requestListenerWrapper({
+        this.bindRoute({
+            url: '/:id',
+            method: 'GET',
             location: 'users/:id - GET',
-            action: (req, res) => this.getUserById(req, res),
-        }));
+            listener: (req, res) => this.getUserById(req, res),
+        });
 
-        this.router.post('/', this.requestListenerWrapper({
+        this.bindRoute({
+            url: '/',
+            method: 'POST',
             location: 'users - POST',
-            action: (req, res) => this.createUser(req, res),
-        }));
+            listener: (req, res) => this.createUser(req, res),
+        });
 
-        this.router.delete('/', this.requestListenerWrapper({
+        this.bindRoute({
+            url: '/',
+            method: 'DELETE',
             location: 'users - DELETE',
-            action: (req, res) => this.deleteUsers(req, res),
-        }));
+            listener: (req, res) => this.deleteUsers(req, res),
+        });
 
-        this.router.delete('/:id', this.requestListenerWrapper({
+        this.bindRoute({
+            url: '/:id',
+            method: 'DELETE',
             location: 'users/:id - DELETE',
-            action: (req, res) => this.deleteUserById(req, res),
-        }));
-        
-        this.router.patch('/:id', this.requestListenerWrapper({
+            listener: (req, res) => this.deleteUserById(req, res),
+        });
+
+        this.bindRoute({
+            url: '/:id',
+            method: 'PATCH',
             location: 'users/:id - PATCH',
-            action: (req, res) => this.updateUser(req, res),
-        }));
+            listener: (req, res) => this.updateUser(req, res),
+        });
     }
 
     // Получение пользователей

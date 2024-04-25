@@ -5,6 +5,7 @@ import logger from '#logger/index.js';
 import db from '#database/db.js';
 
 // Utils
+import { getObjectsIntersection } from '#utils/commonUtils.js';
 import { objectValidate, getPartialRulesForObject } from '#utils/validateUtils.js';
 import { extractValuesArray, getValuesMarkers } from '#utils/dbUtils.js';
 
@@ -50,7 +51,7 @@ export default class TableManager {
     async add(payload = {}, queryParts = returningQuery) {
         const onError = this._queryCheck('insert', 'row insert failed', 'add');
 
-        const insertion = { ...(this.$query.schema || this.validateRules) };
+        const insertion = getObjectsIntersection({ ...this.$query.schema }, payload);
         delete insertion.id;
 
         try {

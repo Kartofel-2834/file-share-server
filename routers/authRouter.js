@@ -19,20 +19,26 @@ const jwtSecret = process.env.JWT_SECRET;
 class AuthRouter extends DefaultRouter {
     init() {
         // Биндинг листенеров
-        this.router.post('/login/', this.requestListenerWrapper({
+        this.bindRoute({
+            url: '/login/',
+            method: 'POST',
             location: 'auth/login - POST',
-            action: (req, res) => this.login(req, res),
-        }));
+            listener: (req, res) => this.login(req, res),
+        });
 
-        this.router.post('/email-verify/', this.requestListenerWrapper({
+        this.bindRoute({
+            url: '/email-verify/',
+            method: 'POST',
             location: 'auth/email-verify - POST',
-            action: (req, res) => this.emailVerification(req, res),
-        }));
+            listener: (req, res) => this.emailVerification(req, res),
+        });
 
-        this.router.post('/password-recovery/', this.requestListenerWrapper({
+        this.bindRoute({
+            url: '/password-recovery/',
+            method: 'POST',
             location: 'auth/password-recovery - POST',
-            action: (req, res) => this.passwordRecovery(req, res),
-        }));
+            listener: (req, res) => this.passwordRecovery(req, res),
+        });
     }
 
     // Авторизация

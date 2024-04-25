@@ -1,4 +1,5 @@
 // Node
+import fs from 'fs/promises';
 import path from 'path';
 
 // Default router
@@ -18,34 +19,46 @@ class FilesRouter extends DefaultRouter {
         this.router.use(authMiddleware);
 
         // Биндинг листенеров
-        this.router.get('/:id', [
-            roleAccessMiddleware(['admin', 'moderator', 'user']),
-        ], this.requestListenerWrapper({
+        this.bindRoute({
+            url: '/:id',
+            method: 'GET',
             location: 'files/:id - GET',
-            action: (req, res) => this.getFile(req, res),
-        }));
+            listener: (req, res) => this.getFile(req, res),
+            middlewares: [
+                roleAccessMiddleware(['admin', 'moderator', 'user']),
+            ],
+        });
 
-        this.router.get('/', [
-            roleAccessMiddleware(['admin', 'moderator', 'user']),
-        ], this.requestListenerWrapper({
+        this.bindRoute({
+            url: '/',
+            method: 'GET',
             location: 'files - GET',
-            action: (req, res) => this.getFilesList(req, res),
-        }));
+            listener: (req, res) => this.getFilesList(req, res),
+            middlewares: [
+                roleAccessMiddleware(['admin', 'moderator', 'user']),
+            ],
+        });
 
-        this.router.post('/', [
-            filesMiddleware('file'),
-            roleAccessMiddleware(['admin', 'moderator']),
-        ], this.requestListenerWrapper({
+        this.bindRoute({
+            url: '/',
+            method: 'POST',
             location: 'files - POST',
-            action: this.addFile,
-        }));
+            listener: (req, res) => this.addFile(req, res),
+            middlewares: [
+                filesMiddleware('file'),
+                roleAccessMiddleware(['admin', 'moderator']),
+            ],
+        });
 
-        this.router.delete('/', [
-            roleAccessMiddleware(['admin', 'moderator']),
-        ], this.requestListenerWrapper({
+        this.bindRoute({
+            url: '/',
+            method: 'DELETE',
             location: 'files - DELETE',
-            action: (req, res) => this.deleteFiles(req, res),
-        }));
+            listener: (req, res) => this.deleteFiles(req, res),
+            middlewares: [
+                roleAccessMiddleware(['admin', 'moderator']),
+            ],
+        });
     }
 
     // Добавление файла
@@ -108,6 +121,7 @@ class FilesRouter extends DefaultRouter {
     // Удалить список файлов
     async deleteFiles(req, res) {
         const filesIds = req.body?.ids || [];
+        const { id, role } = req?.tokenData || {};
 
         if (!filesIds?.length || !Array.isArray(filesIds)) {
             return res.status(400).json({
@@ -115,7 +129,14 @@ class FilesRouter extends DefaultRouter {
             });
         }
 
-        const deletedFiles = await filesTable.deleteFiles(filesIds);
+        const deletedFiles = await filesTable.deleteFiles(filesIds, role, id);
+
+        let filesDeletePromises = Array.isArray(deletedFiles) ? deletedFiles : [];
+        filesDeletePromises = deletedFiles.filter(file => file.path).map(file => fs.unlink(file.path));
+
+        // eslint-disable-next-line
+        await Promise.all(filesDeletePromises);
+
         res.status(200).json(deletedFiles);
     }
 }

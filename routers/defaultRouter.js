@@ -8,6 +8,8 @@ import { getSetMarkers } from '#utils/dbUtils.js';
 // Logger
 import logger from '#logger/index.js';
 
+const allowedMethods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
+
 export default class DefaultRouter {
     constructor() {
         this.router = new Router();
@@ -17,6 +19,36 @@ export default class DefaultRouter {
 
     init() {
         this.router.get('/', (req, res) => res.send('hello'));
+    }
+
+    bindRoute(options = {}, noWrapper = false) {
+        if (!allowedMethods.includes(options?.method)) {
+            return logger.error('route bind failed: invalid method', 'DefaultRouter/bind');
+        }
+
+        if (typeof options?.listener !== 'function') {
+            return logger.error('route bind failed: invalid listener', 'DefaultRouter/bind');
+        }
+
+        let { listener, method } = options;
+
+        const url = options?.url || '/';
+        const middlewares = options?.middlewares || [];
+
+        const location = options?.location || `DefaultRouter/bind - ${method}`;
+        const error = typeof options?.error === 'function' ? options.error : () => null; 
+        
+        if (!noWrapper) {
+            listener = this.requestListenerWrapper({
+                action: listener,
+                location,
+                error,
+            });
+        }
+
+        method = method.toLowerCase();
+
+        return this.router[method](url, middlewares, listener);
     }
 
     // Дефолтная обертка для обработчиков поступающих запросов
@@ -36,7 +68,7 @@ export default class DefaultRouter {
                 }
 
                 logger.error(err, location || 'DefaultRouter/requestListenerWrapper');
-                res.status(500).json(message);
+                res.status(500).json({ message });
             }
         };
     }

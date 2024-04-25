@@ -7,6 +7,9 @@ import TableManager from '#database/tableManager.js';
 // Logger
 import logger from '#logger/index.js';
 
+// Utils
+import { getValuesMarkers } from '#utils/dbUtils.js';
+
 const validateRules = {
     name: ['required'],
 };
@@ -26,8 +29,29 @@ class FilesTableManager extends TableManager {
         return result;
     }
 
-    async deleteFiles(filesIdsList = []) {
-        const deletedFiles = await this.deleteByIdsList(filesIdsList);
+    async deleteFiles(filesIdsList = [], userRole, userId) {
+        if (!['moderator', 'admin'].includes(userRole)) {
+            return {
+                result: null,
+                errors: {
+                    role: 'Access denied',
+                },
+            };
+        }
+
+        const values = [...filesIdsList];
+        const markers = getValuesMarkers(filesIdsList);
+        const filter = [`id in (${markers.join(', ')})`];
+        
+        if (userRole === 'moderator') {
+            filter.push(`owner_id=$${markers.length + 1}`);
+            values.push(userId);
+        }
+
+        const deletedFiles = await this.delete({
+            where: filter.join(' AND '),
+            returning: '*',
+        }, values);
 
         if (!Array.isArray(deletedFiles)) {
             return deletedFiles;
