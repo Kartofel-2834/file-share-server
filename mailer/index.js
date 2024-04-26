@@ -34,7 +34,8 @@ class Mailer {
 
     async send(to, options = {}) {
         if (!this.transporter) {
-            return logger.error('mail send failed: transporter not inited', 'mailer');
+            logger.error('mail send failed: transporter not inited', 'mailer');
+            return null;
         }
 
         try {

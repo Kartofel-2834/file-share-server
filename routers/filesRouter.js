@@ -54,7 +54,17 @@ class FilesRouter extends DefaultRouter {
             url: '/',
             method: 'DELETE',
             location: 'files - DELETE',
-            listener: (req, res) => this.deleteFiles(req, res),
+            listener: (req, res) => this.deleteFilesList(req, res),
+            middlewares: [
+                roleAccessMiddleware(['admin', 'moderator']),
+            ],
+        });
+
+        this.bindRoute({
+            url: '/:id',
+            method: 'DELETE',
+            location: 'files/:id - DELETE',
+            listener: (req, res) => this.deleteFile(req, res),
             middlewares: [
                 roleAccessMiddleware(['admin', 'moderator']),
             ],
@@ -119,9 +129,9 @@ class FilesRouter extends DefaultRouter {
     }
 
     // Удалить список файлов
-    async deleteFiles(req, res) {
+    async deleteFilesList(req, res) {
         const filesIds = req.body?.ids || [];
-        const { id, role } = req?.tokenData || {};
+        const { id: userId, role } = req?.tokenData || {};
 
         if (!filesIds?.length || !Array.isArray(filesIds)) {
             return res.status(400).json({
@@ -129,7 +139,8 @@ class FilesRouter extends DefaultRouter {
             });
         }
 
-        const deletedFiles = await filesTable.deleteFiles(filesIds, role, id);
+        const ownerId = role === 'admin' ? null : userId;
+        const deletedFiles = await filesTable.deleteFiles(filesIds, ownerId);
 
         let filesDeletePromises = Array.isArray(deletedFiles) ? deletedFiles : [];
         filesDeletePromises = deletedFiles.filter(file => file.path).map(file => fs.unlink(file.path));
@@ -138,6 +149,30 @@ class FilesRouter extends DefaultRouter {
         await Promise.all(filesDeletePromises);
 
         res.status(200).json(deletedFiles);
+    }
+
+    // Удалить файл по id
+    async deleteFile(req, res) {
+        const fileId = this.checkIdParam(req, res);
+        const { id: userId, role } = req?.tokenData || {};
+
+        if (!fileId) {
+            return;
+        }
+
+        const ownerId = role === 'admin' ? null : userId;
+        const [deletedFile] = await filesTable.deleteFiles([fileId], ownerId);
+        
+        if (!deletedFile || !deletedFile?.path) {
+            return res.status(400).json({
+                message: 'Request error: no file for delete',
+                result: null,
+            });
+        }
+
+        await fs.unlink(deletedFile.path);
+
+        res.status(200).json(deletedFile);
     }
 }
 

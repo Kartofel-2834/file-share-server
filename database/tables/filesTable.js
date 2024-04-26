@@ -29,23 +29,14 @@ class FilesTableManager extends TableManager {
         return result;
     }
 
-    async deleteFiles(filesIdsList = [], userRole, userId) {
-        if (!['moderator', 'admin'].includes(userRole)) {
-            return {
-                result: null,
-                errors: {
-                    role: 'Access denied',
-                },
-            };
-        }
-
+    async deleteFiles(filesIdsList = [], ownerId = null) {
         const values = [...filesIdsList];
         const markers = getValuesMarkers(filesIdsList);
         const filter = [`id in (${markers.join(', ')})`];
-        
-        if (userRole === 'moderator') {
+
+        if (ownerId) {
             filter.push(`owner_id=$${markers.length + 1}`);
-            values.push(userId);
+            values.push(ownerId);
         }
 
         const deletedFiles = await this.delete({
@@ -53,12 +44,10 @@ class FilesTableManager extends TableManager {
             returning: '*',
         }, values);
 
-        if (!Array.isArray(deletedFiles)) {
-            return deletedFiles;
-        }
-
-        for (const file of deletedFiles) {
-            logger.log(`deleted file ${file?.name}`, 'filesTable/deleteFiles');
+        if (Array.isArray(deletedFiles)) {
+            for (const file of deletedFiles) {
+                logger.log(`deleted file ${file?.name}`, 'filesTable/deleteFiles');
+            }
         }
 
         return deletedFiles;
