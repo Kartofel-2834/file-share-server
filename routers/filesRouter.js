@@ -11,11 +11,13 @@ import authMiddleware from '#middlewares/authMiddleware.js';
 import roleAccessMiddleware from '#middlewares/roleAccessMiddleware.js';
 
 // Database
-import { schema as filesSchema } from '#database/queries/filesQueries.js';
 import filesTable from '#database/tables/filesTable.js';
+import historyTable from '#database/tables/historyTable.js';
+import { schema as filesSchema } from '#database/queries/filesQueries.js';
 
 class FilesRouter extends DefaultRouter {
     init() {
+        // Промежуточные обработки
         this.router.use(authMiddleware);
 
         // Биндинг листенеров
@@ -24,9 +26,6 @@ class FilesRouter extends DefaultRouter {
             method: 'GET',
             location: 'files/:id - GET',
             listener: (req, res) => this.getFile(req, res),
-            middlewares: [
-                roleAccessMiddleware(['admin', 'moderator', 'user']),
-            ],
         });
 
         this.bindRoute({
@@ -34,9 +33,6 @@ class FilesRouter extends DefaultRouter {
             method: 'GET',
             location: 'files - GET',
             listener: (req, res) => this.getFilesList(req, res),
-            middlewares: [
-                roleAccessMiddleware(['admin', 'moderator', 'user']),
-            ],
         });
 
         this.bindRoute({
@@ -69,6 +65,20 @@ class FilesRouter extends DefaultRouter {
                 roleAccessMiddleware(['admin', 'moderator']),
             ],
         });
+
+        this.bindRoute({
+            url: '/:id/content',
+            method: 'GET',
+            location: 'files/:id/content - GET',
+            listener: (req, res) => this.downloadFile(req, res),
+        });
+
+        this.bindRoute({
+            url: '/:id/view',
+            method: 'GET',
+            location: 'files/:id/view - GET',
+            listener: (req, res) => this.viewFile(req, res),
+        });
     }
 
     // Добавление файла
@@ -79,25 +89,33 @@ class FilesRouter extends DefaultRouter {
             });
         }
 
-        const { id } = req?.tokenData || {};
+        const { id: userId } = req?.tokenData || {};
         const extenstion = path.extname(req.file.path);
+        
         const { errors, result } = await filesTable.add({
             name: req.body.name,
-            created_at: new Date(),
             size: req.file.size,   
             path: req.file.path,
-            owner_id: id,
+            owner_id: userId,
             extenstion,
         });
 
-        if (errors) {
+        const createdFile = result?.[0];
+
+        if (errors || !createdFile?.id) {
             return res.status(400).json({
                 message: 'Request error: validation failed',
                 errors,
             });
         } 
 
-        res.status(200).json(result);
+        await historyTable.add({
+            type: 'upload',
+            user_id: userId,
+            file_id: createdFile.id,
+        });
+
+        res.status(200).json(createdFile);
     }
 
     // Получить файл
@@ -173,6 +191,51 @@ class FilesRouter extends DefaultRouter {
         await fs.unlink(deletedFile.path);
 
         res.status(200).json(deletedFile);
+    }
+
+    // Отправка файла для скачивания
+    async downloadFile(req, res) {
+        const fileId = this.checkIdParam(req, res);
+        const { id: userId } = req?.tokenData || {};
+
+        if (!fileId) {
+            return;
+        }
+
+        const fileInfo = await filesTable.getById(fileId);
+        await historyTable.add({
+            type: 'download',
+            user_id: userId,
+            file_id: fileId,
+        });
+
+        if (!fileInfo?.path) {
+            return res.status(500).json({
+                message: 'Server error: file path not found',
+            });
+        }
+
+        res.status(200).sendFile(fileInfo.path);
+    }
+
+    // Просмотр файла
+    async viewFile(req, res) {
+        const fileId = this.checkIdParam(req, res);
+        const { id: userId } = req?.tokenData || {};
+
+        if (!fileId) {
+            return;
+        }
+
+        await historyTable.add({
+            type: 'view',
+            user_id: userId,
+            file_id: fileId,
+        });
+
+        res.status(200).json({
+            message: 'Success, file view saved',
+        });
     }
 }
 

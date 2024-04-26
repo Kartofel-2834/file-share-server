@@ -5,7 +5,7 @@ const regex = {
     text: /^[0-9а-яё!?,.\-"'\s]+$/i,
     login: /^[a-z][a-z0-9]{4,}$/i,
     role: /^(user|admin|moderator)$/,
-    actionType: /^(upload|download)$/,
+    actionType: /^(upload|download|view)$/,
     cyrillic: /^[а-яё\s]+$/i,
     latin: /^[a-z\s]+$/i,
     multilang: /^[а-яёa-z\s]+$/i,
@@ -33,6 +33,10 @@ function test(value, reg, message = 'Неверный формат') {
 const validators = {
     // Валидация обязательных полей
     required(value) {
+        if (typeof value !== 'string') {
+            return value ? '' : 'Обязательное поле';
+        }
+
         const cleanValue = value?.replace(/\s/g, '');
 
         return cleanValue && cleanValue?.length ? '' : 'Обязательное поле';
