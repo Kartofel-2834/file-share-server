@@ -1,0 +1,53 @@
+/*  Fonts */
+$base-font: "Roboto";
+$montserrat-font: "Montserrat";
+
+$base-font-size: 1.6rem;
+$body-color: #373A41;
+
+/* Colors */
+$white: #ffffff;
+$base-100: #f3f5f7;
+$base-200: #e7eaed;
+$base-300: #d3d9dF;
+$base-400: #acaebb;
+$base-500: #5f6473;
+$base-600: #373a41;
+$base-800: #1c1e26;
+$base-900: #111;
+
+$success-500: #68cc58;
+$success-400: #e9f7e9;
+$error-300: #f2958b;
+$error-500: #ea4e3d;
+
+$green: #57af7f;
+$blue: #123c69;
+
+$primary: #024950;
+$primary-hover: #0e5c63;
+$primary-active: #003135;
+$secondary: #964734; 
+$lake: #0FA4AF;
+$light-blue: #AFDDE5;
+
+/* Shadows */
+$drop-shadow-l: 0 2.75px 2.2px 0 #00000005, 0 6.6px 5.3px 0 #00000008, 0 12.5px 10px 0 #0000000a, 0 22px 17px 0 #0000000a, 0 41px 33px 0 #0000000d, 0 100px 80px 0 #00000012;
+$drop-shadow-m: 0 0 1px 0 #0000000a, 0 2px 6px 0 #0000000a, 0 16px 24px 0 #0000000f;
+$drop-shadow-s: 0 3px 1px 0 #0000000f, 0 3px 8px 0 #00000026;
+$drop-shadow-xs: 0 6px 13px 0 #0000001f, 0 0.5px 4px 0 #0000001f;
+
+/* Grid */
+$header-h: 8rem;
+
+/* Breakpoints */
+$breakpoints: (
+    mobile: 0,
+    tablet-sm: 768px,
+    tablet: 1024px,
+    laptop: 1280px,
+    desktop: 1440px,
+);
+
+/* Transitions */
+$default-transition: .4s ease;

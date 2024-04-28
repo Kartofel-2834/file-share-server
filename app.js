@@ -46,12 +46,37 @@ async function start() {
         await filesTable.init();
         await historyTable.init();
 
+        await createTestAdmin();
+
         app.listen(port, () => {
             logger.log(`Server start listening on port: ${port}`, 'app');
         });
     } catch (err) {
         logger.error(`Server start error. ${err}`, 'app');
     }
+}
+
+async function createTestAdmin() {
+    const admins = await usersTable.select('*', {
+        where: 'role=$1',
+    }, ['admin']);
+
+    if (admins?.[0]?.id) {
+        return;
+    }
+
+    const createdAdmin = await usersTable.createUser({
+        login: process.env.ADMIN_DEFAULT_LOGIN,
+        password: process.env.ADMIN_DEFAULT_PASSWORD,
+        email: process.env.ADMIN_DEFAULT_MAIL,
+        role: 'admin',
+        surname: 'Тестовый',
+        name: 'Администратор',
+    });
+
+    logger.log(`Created test admin - ${createdAdmin?.login}`, 'app');
+
+    return createdAdmin;
 }
 
 start();

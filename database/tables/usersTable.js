@@ -46,7 +46,7 @@ class UsersTableManager extends TableManager {
         return createdData;
     }
 
-    async updateUser(userId, payload = {}) {
+    async updateUser(userId, payload = {}, userPassword = null) {
         const user = await this.getById(userId);
 
         if (!user) {
@@ -74,7 +74,17 @@ class UsersTableManager extends TableManager {
             return loginError || passwordError;
         }
 
-        const updatedPayload = this._prepareUserPayload(payload, user.role === 'admin');
+        const isAdmin = user.role === 'admin';
+        const isPasswordValid = bcrypt.compareSync(userPassword || '', user.password);
+
+        if (isAdmin && !isPasswordValid) {
+            return {
+                result: null,
+                errors: 'Access denied. wrong password',
+            };
+        }
+
+        const updatedPayload = this._prepareUserPayload(payload, isAdmin);
         const result = await this.updateById(userId, updatedPayload);
         
         return result;
@@ -146,6 +156,8 @@ class UsersTableManager extends TableManager {
 
         if (isAdmin) {
             delete result?.password;
+            delete result?.email_code;
+            delete result?.role;
         } else if (result?.password?.length) {
             result.password = bcrypt.hashSync(result.password || '', 6);
         }

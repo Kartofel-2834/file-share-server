@@ -6,3 +6,4 @@ logger/data.log
 *.log
 .env
 .vscode
+frontend/.gitignore

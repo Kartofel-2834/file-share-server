@@ -1,0 +1,116 @@
+/*stylelint-disable*/
+@mixin respond-to($name, $bp: $breakpoints) {
+    $max: breakpoint-max($name, $bp);
+
+    @if $max {
+        @media (max-width: $max) {
+            @content;
+        }
+    } @else {
+        @content;
+    }
+}
+
+@mixin text($type, $size, $family: "base") {
+    line-height: 1;
+
+    @if $family == "montserrat" {
+        font-family: $montserrat-font;
+    }
+
+    // H
+    @if $type == "h" or $type == "h-n" {
+        @if $type == "h-n" {
+            font-weight: 400;
+        } @else {
+            font-weight: 500;
+        }
+
+        @if $size == 1 {
+            font-size: 5.6rem;
+        } @else if $size == 2 {
+            font-size: 4.4rem;
+        } @else if $size == 3 {
+            font-size: 3.2rem;
+        } @else if $size == 4 {
+            font-size: 2.4rem;
+        } @else if $size == 5 {
+            font-size: 2rem;
+        } @else if $size == 6 {
+            font-size: 1.6rem;
+        } @else if $size == 7 {
+            font-size: 1.4rem;
+        } @else if $size == 8 {
+            font-size: 1.2rem;
+        } @else if $size == 9 {
+            font-size: 1rem;
+        }
+    }
+
+    // P
+    @if $type == "p" {
+        @if $type == "p-m" {
+            font-weight: 500;
+        }
+
+        @if $size == 1 {
+            font-size: 2rem;
+        } @else if $size == 2 {
+            font-size: 1.8rem;
+        } @else if $size == 3 {
+            font-size: 1.6rem;
+        } @else if $size == 4 {
+            font-size: 1.4rem;
+        } @else if $size == 5 {
+            font-size: 1.2rem;
+        }
+    }
+
+    // L
+    @if $type == "l" or $type == "l-m" {
+        @if $type == "l-m" {
+            font-weight: 500;
+        }
+
+        @if $size == 1 {
+            font-size: 2rem;
+        } @else if $size == 2 {
+            font-size: 1.6rem;
+        } @else if $size == 3 {
+            font-size: 1.4rem;
+        } @else if $size == 4 {
+            font-size: 1.2rem;
+        } @else if $size == 5 {
+            font-size: 1.2rem;
+        }
+    }
+}
+
+@mixin text-ellipsis($line-clamp, $break-all: false, $strict: true) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @if $break-all {
+        word-break: break-all;
+    }
+
+    @if $line-clamp == 1 and $strict == true {
+        display: block;
+        white-space: nowrap;
+    } @else {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: $line-clamp;
+        line-clamp: $line-clamp;
+    }
+}
+
+@mixin font($alias, $name, $weight) {
+    @font-face {
+        font-family: $alias;
+        src: url("/fonts/" + $name + ".ttf") format("truetype");
+        font-weight: $weight;
+        font-style: normal;
+        font-display: swap;
+    }
+}

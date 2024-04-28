@@ -1,0 +1,130 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body,
+#__nuxt,
+#__layout {
+    width: 100%;
+    height: 100%;
+}
+
+/* rem - .6944vw */
+html {
+    height: 100%;
+
+    // фикс размера шрифтов для safari, если они в rem+px (см. respond-to(desktop))
+    min-height: 1vw;
+    font-size: 10px;
+
+    @include respond-to(desktop) {
+        font-size: calc(6px + .27777778vw);
+    }
+
+    @include respond-to(laptop) {
+        font-size: .6944444444vw;
+    }
+
+    @include respond-to(tablet) {
+        font-size: .9844444444vw;
+    }
+
+    @include respond-to(mobile) {
+        font-size: 10px;
+    }
+}
+
+body {
+    overflow-y: scroll;
+    margin: 0;
+    font-family: $base-font;
+    font-size: $base-font-size;
+    line-height: 124%;
+    color: $body-color;
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+p {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+ul {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+}
+
+li {
+    list-style: none;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    outline: none;
+    font-family: inherit;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+input {
+    outline: none;
+
+    &[type="number"]::-webkit-inner-spin-button,
+    &[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    &[disabled],
+    fieldset[disabled] {
+        -webkit-text-fill-color: $base-100;
+        opacity: 1;
+    }
+
+    &::-ms-clear {
+        display: none;
+    }
+}
+
+textarea {
+    resize: none;
+}
+
+pre,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+    font-size: initial;
+    font-weight: normal;
+}
+
+address {
+    font-style: normal;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+    transition: background-color 600000s 0s, color 600000s 0s;
+}
