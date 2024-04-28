@@ -118,7 +118,7 @@ class UsersRouter extends DefaultRouter {
             return;
         }
 
-        const { result, errors } = await usersTable.updateUser(userId, req.body);
+        const { result, errors } = await usersTable.updateUser(userId, req.body, req.body?.password);
     
         if (errors) {
             return res.status(400).json({
