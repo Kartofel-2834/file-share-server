@@ -3,6 +3,7 @@
         :class="[$style.VInputPassword, classList]"
         :type="inputType"
         :icon-size="iconSize"
+        :error-icon="null"
         :error="error"
         @icon-click="toggleType"
     >
@@ -67,6 +68,12 @@ function toggleType() {
     .VInputPassword {
         /* --- Modificators --- */
         &._eyeActive {
+             &._withError {
+                .eyeIcon {
+                    color: $error-500;
+                }
+            }
+
             .eyeIcon {
                 color: $primary-hover;
             }
@@ -74,7 +81,7 @@ function toggleType() {
 
         &._withError {
             .eyeIcon {
-                opacity: 0;
+                color: $error-300;
             }
         }
     }

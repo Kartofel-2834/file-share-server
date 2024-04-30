@@ -1,7 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-// Pages
-const LoginPage = () => import('@/views/login.vue');
+// Auth pages
+const LoginPage = () => import('@/views/auth/login.vue');
+
+// Index page
 const IndexPage = () => import('@/views/index.vue');
 
 const router = createRouter({
@@ -14,7 +16,7 @@ const router = createRouter({
         },
 
         {
-            path: '/login/',
+            path: '/auth/login/',
             name: 'login',
             component: LoginPage,
         },

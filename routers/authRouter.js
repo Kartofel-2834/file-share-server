@@ -172,7 +172,8 @@ class AuthRouter extends DefaultRouter {
     // Создание JWT токена
     _createJWT(payload = {}, options = {}) {
         return jwt.sign(payload, jwtSecret, {
-            expiresIn: '24h',
+            // expiresIn: '24h',
+            expiresIn: 20,
             ...options,
         });
     }
