@@ -3,7 +3,7 @@ import { strValidate } from '@/assets/utils/validate-utils.js';
 
 export const loginFields = {
     login: {
-        validate: value => strValidate(value, ['required', 'login']),
+        validate: value => strValidate(value, ['required']),
         attributes: {
             placeholder: 'Логин',
         },
@@ -11,7 +11,7 @@ export const loginFields = {
 
     password: {
         type: 'password',
-        validate: value => strValidate(value, ['required', 'password']),
+        validate: value => strValidate(value, ['required']),
         attributes: {
             placeholder: 'Пароль',
         },

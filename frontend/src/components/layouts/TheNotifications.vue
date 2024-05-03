@@ -1,24 +1,22 @@
 <template>
     <transition-group
-        :class="$style.Notifications"
+        :class="$style.TheNotifications"
         name="notification"
         tag="div"
     >
-        <div
+        <Notification
             v-for="(notification, index) of updatedNotifications"
             :key="`Notification_${notification.id}`"
-            ref="notifications"
             :class="[$style.notification, getNotificationClassList(index)]"
+            :status="notification?.status"
             @click="onNotificationClick"
-        >
-            {{ notification }}
-        </div>
+        />
     </transition-group>
 </template>
 
 <script>
 export default {
-    name: 'Notifications',
+    name: 'TheNotifications',
 };
 </script>
 
@@ -29,8 +27,10 @@ import { computed, useCssModule } from 'vue';
 // Store
 import { useNotificationsStore } from '@/stores/notifications';
 
-const notifications = useNotificationsStore();
+// Components
+import Notification from '@/components/layouts/notifications/Notification.vue';
 
+const notifications = useNotificationsStore();
 const $style = useCssModule();
 
 // Computed
@@ -61,7 +61,7 @@ function getNotificationClassList(index) {
 </script>
 
 <style lang="scss" module>
-    .Notifications {
+    .TheNotifications {
         //
     }
 
@@ -69,29 +69,13 @@ function getNotificationClassList(index) {
         position: fixed;
         right: 2rem;
         bottom: 2rem;
-        overflow: hidden;
-        width: 36rem;
-        max-width: 36rem;
-        min-height: 14rem;
-        padding: 2rem;
-        border-radius: .8rem;
-        word-break: break-all;
-        background-color: $white;
-        cursor: pointer;
-        user-select: none;
-        box-shadow: $drop-shadow-m;
-        opacity: 0;
         transform: translateY(-100px);
-        transition:
-            opacity $default-transition,
-            transform $default-transition;
 
         /* --- Transition --- */
         :global {
             .notification-enter-active,
             .notification-leave-active {
-                transition:
-                    opacity $default-transition,
+                transition: opacity $default-transition,
                     transform $default-transition;
             }
         }
@@ -121,7 +105,7 @@ function getNotificationClassList(index) {
         }
 
         &._second {
-            opacity: .5;
+            opacity: 0.5;
             transform: translateY(-50px);
 
             &:global(.notification-enter-from),
@@ -132,7 +116,7 @@ function getNotificationClassList(index) {
         }
 
         &._third {
-            opacity: .2;
+            opacity: 0.2;
             transform: translateY(-100px);
 
             &:global(.notification-enter-from),
