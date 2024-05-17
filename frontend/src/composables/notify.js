@@ -4,7 +4,7 @@ import { useNotificationsStore } from '@/stores/notifications';
 export function useNotify() {
     const notifications = useNotificationsStore();
 
-    function notify(title, description, delay = 3000) {
+    function notify(title, description, delay = 30000) {
         notifications.add({
             status: this.type,
             title,

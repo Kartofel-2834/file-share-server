@@ -2,7 +2,7 @@
     <main id="app">
         <RouterView />
 
-        <Notifications />
+        <TheNotifications />
     </main>
 </template>
 
@@ -17,5 +17,5 @@ export default {
 import { defineAsyncComponent } from 'vue';
 
 // Components
-const Notifications = defineAsyncComponent(() => import('@/components/layouts/Notifications.vue'));
+const TheNotifications = defineAsyncComponent(() => import('@/components/layouts/TheNotifications.vue'));
 </script>
