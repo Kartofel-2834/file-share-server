@@ -37,6 +37,7 @@
                 <VIcon
                     name="loader"
                     :class="$style.loaderSvg"
+                    :size="iconSize"
                 />
             </div>
         </transition>
@@ -85,7 +86,7 @@ const $props = defineProps({
 
     iconSize: {
         type: String,
-        default: 'size-12',
+        default: 'size-24',
     },
 
     icon: {
@@ -113,6 +114,7 @@ const classList = computed(() => ({
     [$style[`_${$props.color}`]]: $props.color,
     [$style[`_${$props.size}`]]: $props.size,
     [$style._disabled]: $props.disabled,
+    [$style._loading]: $props.loading,
 }));
 </script>
 
@@ -163,13 +165,49 @@ const classList = computed(() => ({
         }
 
         /* --- Modificators --- */
+        &._loading,
         &._disabled {
             pointer-events: none;
         }
+
+        &._loading {
+            .icon,
+            .label {
+                opacity: 0;
+            }
+        }
+    }
+
+    .icon,
+    .label {
+        transition: opacity $default-transition;
     }
 
     .label {
         font-size: inherit;
         font-weight: inherit;
+    }
+
+    .loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        display: flex;
+        color: inherit;
+        transform: translate(-50%, -50%);
+    }
+
+    .loaderSvg {
+        animation: rotate 1.8s linear infinite;
+    }
+
+    @keyframes rotate {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
     }
 </style>

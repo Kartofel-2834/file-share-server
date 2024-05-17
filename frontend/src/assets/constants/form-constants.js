@@ -11,7 +11,6 @@ export const loginFields = {
 
     password: {
         type: 'password',
-        validate: value => strValidate(value, ['required', 'password']),
         attributes: {
             placeholder: 'Пароль',
         },

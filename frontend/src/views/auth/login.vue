@@ -8,6 +8,7 @@
             <VForm
                 :values="values"
                 :fields="loginFields"
+                :loading="isLoading"
                 @change="values = $event"
                 @submit="onSubmit"
             >
@@ -54,15 +55,20 @@ const $axios = useAxios();
 const $notify = useNotify();
 
 const values = ref({});
+const isLoading = ref(false);
 
 // Methods
 async function onSubmit(values) {
     try {
+        isLoading.value = true;
+
         const res = await $axios.post($api.auth.login);
         console.log(res);
     } catch (err) {
         console.warn('[LoginPage/onSubmit] request failed: ', err);
         $notify.error(`Какая-то ошибка: ${err}`);
+    } finally {
+        isLoading.value = false;
     }
 }
 </script>

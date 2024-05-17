@@ -51,13 +51,15 @@
             name="submit"
             :on-submit="onSubmit"
             :is-form-valid="isFormValid"
-            :disabled="!isFormValid"
+            :disabled="isSubmitDisabled"
+            :loading="loading"
         >
             <VButton
                 v-if="!noSubmit"
                 :class="$style.submitButton"
                 v-bind="getButtonAttributes()"
-                :disabled="!isFormValid"
+                :disabled="isSubmitDisabled"
+                :loading="loading"
                 @click="onSubmit"
             >
                 <slot name="submit-text">
@@ -107,6 +109,11 @@ const $props = defineProps({
         }),
     },
 
+    loading: {
+        type: Boolean,
+        default: null,
+    },
+
     validateOnInput: Boolean,
     noBlurValidate: Boolean,
     noSubmit: Boolean,
@@ -127,6 +134,7 @@ onMounted(() => {
 // Computed
 const fieldsList = computed(() => Array.from(new Set(Object.keys($props.fields))));
 const isFormValid = computed(() => !fieldsList.value.some(field => Boolean(hiddenErrors.value?.[field])));
+const isSubmitDisabled = computed(() => !isFormValid.value || $props.loading);
 
 // Watch
 watch(() => $props.values, () => validateAll());
@@ -159,7 +167,7 @@ function onBlur(field, newValue = null) {
 }
 
 function onSubmit(startSubmitTimer, removeSubmitTimer) {
-    if (!isFormValid.value) {
+    if (isSubmitDisabled.value) {
         return;
     }
 
