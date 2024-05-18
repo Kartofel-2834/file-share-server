@@ -22,6 +22,13 @@ const validateRules = {
     surname: ['required', 'name'],
 };
 
+function dropError(errors) {
+    return {
+        result: null,
+        errors,
+    };
+}
+
 class UsersTableManager extends TableManager {
     constructor() {
         super('users', usersQueries, validateRules);
@@ -44,6 +51,51 @@ class UsersTableManager extends TableManager {
         }
 
         return createdData;
+    }
+
+    async setVerificationCode(adminId, code) {
+        const user = await this.getById(adminId);
+
+        if (!user) {
+            return dropError({
+                id: 'Пользователь с таким id не существует',
+            }); 
+        }
+
+        if (user?.role !== 'admin') {
+            return dropError({
+                role: 'Отказано в доступе. Код восстановления доступен только администраторам',
+            });
+        }
+
+        const result = await this.updateById(adminId, {
+            email_code: code,
+        });
+        
+        return result;
+    }
+
+    async setAdminPassword(adminId, newPassword) {
+        const user = await this.getById(adminId);
+        const isAdmin = user?.role === 'admin';
+
+        if (!user) {
+            return dropError({
+                id: 'Пользователь с таким id не существует',
+            }); 
+        }
+
+        if (!isAdmin) {
+            return dropError({
+                role: 'Отказано в доступе. Восстановление пароля доступно только администраторам',
+            });
+        }
+
+        const result = await this.updateById(adminId, {
+            password: this._hashPassword(newPassword),
+        });
+
+        return result;
     }
 
     async updateUser(userId, payload = {}, userPassword = null) {
@@ -80,7 +132,9 @@ class UsersTableManager extends TableManager {
         if (isAdmin && !isPasswordValid) {
             return {
                 result: null,
-                errors: 'Access denied. wrong password',
+                errors: {
+                    password: 'Отказано в доступе, неверный пароль',
+                },
             };
         }
 
@@ -124,7 +178,7 @@ class UsersTableManager extends TableManager {
 
     // Проверка валидности пароля
     _checkPassword(password) {
-        const error = validate(password || '', ['required', 'password']);
+        const error = validate(password || '', ['required']);
         
         if (!error) {
             return null;
@@ -151,6 +205,10 @@ class UsersTableManager extends TableManager {
     }
 
     // Хэширование пароля пользователя перед вставкой в бд
+    _hashPassword(notHashedPassword) {
+        return bcrypt.hashSync(notHashedPassword || '', 6);
+    }
+
     _prepareUserPayload(payload = {}, isAdmin = false) {
         const result = { ...payload };
 
@@ -159,7 +217,7 @@ class UsersTableManager extends TableManager {
             delete result?.email_code;
             delete result?.role;
         } else if (result?.password?.length) {
-            result.password = bcrypt.hashSync(result.password || '', 6);
+            result.password = this._hashPassword(result.password);
         }
 
         delete result.id;

@@ -9,6 +9,8 @@
             :key="`Notification_${notification.id}`"
             :class="[$style.notification, getNotificationClassList(index)]"
             :status="notification?.status"
+            :title="notification?.title"
+            :description="notification?.description"
             @click="onNotificationClick"
         />
     </transition-group>

@@ -1,7 +1,5 @@
 export const $authApi = {
     login: '/auth/login/',
-};
-
-export const $api = {
-    auth: $authApi,
+    emailVerify: '/auth/email-verify/',
+    passwordRecovery: '/auth/password-recovery/',
 };

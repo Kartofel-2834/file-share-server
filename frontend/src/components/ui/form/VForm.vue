@@ -24,9 +24,19 @@
                     :on-input="customValue => onInput(customValue, field)"
                     :on-blur="() => onBlur(field)"
                 >
+                    <!-- Code field -->
+                    <VInputCode
+                        v-if="fields?.[field]?.type === 'code'"            
+                        :value="values?.[field]"
+                        :error="Boolean(errors?.[field])"
+                        v-bind="getFieldAttributes(field)"
+                        @input="onInput($event, field)"
+                        @blur="onBlur(field)"
+                    />
+
                     <!-- Password field -->
                     <VInputPassword
-                        v-if="fields?.[field]?.type === 'password'"            
+                        v-else-if="fields?.[field]?.type === 'password'"            
                         :value="values?.[field]"
                         :error="Boolean(errors?.[field])"
                         v-bind="getFieldAttributes(field)"
@@ -85,6 +95,7 @@ const VFormHint = defineAsyncComponent(() => import('@/components/ui/form/VFormH
 const VButton = defineAsyncComponent(() => import('@/components/ui/button/VButton.vue'));
 const VInput = defineAsyncComponent(() => import('@/components/ui/input/VInput.vue'));
 const VInputPassword = defineAsyncComponent(() => import('@/components/ui/input/VInputPassword.vue'));
+const VInputCode = defineAsyncComponent(() => import('@/components/ui/input/VInputCode.vue'));
 
 const $props = defineProps({
     values: {
@@ -263,7 +274,7 @@ function getButtonAttributes() {
         display: grid;
         grid-auto-flow: row;
         column-gap: .8rem;
-        row-gap: 1.2rem;
+        row-gap: 1.6rem;
     }
 
     .submitButton {

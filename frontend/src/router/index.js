@@ -1,25 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-// Auth pages
-const LoginPage = () => import('@/views/auth/login.vue');
-
-// Index page
-const IndexPage = () => import('@/views/index.vue');
+// Routes
+import homeRoutes from '@/router/home';
+import authRoutes from '@/router/auth';
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
-        {
-            path: '/',
-            name: 'home',
-            component: IndexPage,
-        },
-
-        {
-            path: '/auth/login/',
-            name: 'login',
-            component: LoginPage,
-        },
+        ...homeRoutes,
+        ...authRoutes,
     ],
 });
 

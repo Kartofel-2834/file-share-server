@@ -1,8 +1,8 @@
 // Constants
-import { weekDays, months } from 'assets/js/constants/dateData';
+import { weekDays, months } from '@/assets/constants/date-constants';
 
 // Utils
-import { leadingZero } from 'assets/js/utils/numbers-utils';
+import { leadingZero } from '@/assets/utils/numbers-utils';
 
 export const dayByIndex = (index, short) => {
     const { list, shortList } = weekDays;

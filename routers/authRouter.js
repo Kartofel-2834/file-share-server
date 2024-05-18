@@ -93,6 +93,9 @@ class AuthRouter extends DefaultRouter {
         if (!code) {
             return res.status(400).json({
                 message: 'Request error: code must be provided',
+                errors: {
+                    code: 'Отсутствует код подтверждения',
+                },
             });
         }
 
@@ -108,10 +111,7 @@ class AuthRouter extends DefaultRouter {
             });
         }
 
-        const { result, errors } = await usersTable.updateUser(user.id, {
-            password: new_password || '',
-            email_code: null,
-        });
+        const { result, errors } = await usersTable.setAdminPassword(user.id, new_password || '');
 
         if (errors) {
             return res.status(400).json({
@@ -145,24 +145,29 @@ class AuthRouter extends DefaultRouter {
         }
 
         const code = generateCode(4);
+        const jwtCode = this._createJWT({ code }, { expiresIn: 900 });
 
         // Запись кода в базу данных
-        const dbUpdateRequest = usersTable.updateUser(user.id, {
-            email_code: this._createJWT({ code }, { expiresIn: 900 }),
-        });
+        const dbRes = await usersTable.setVerificationCode(user.id, jwtCode);
+
+        if (!dbRes?.result?.email_code) {
+            return res.status(500).json({
+                message: 'Server error: code send failed',
+                errors: dbRes?.errors,
+            });
+        }
 
         // Отпарвка сообщения с кодом на почту пользователя
-        const mailSendRequest = mailer.send(user.email, {
+        const mailRes = await mailer.send(user.email, {
             text: `Код подтверждения для восстановления пароля: ${code}`,
         });
 
-        // eslint-disable-next-line
-        const [dbRes, mailRes] = await Promise.all([dbUpdateRequest, mailSendRequest]);
-
-        // Проверка успешности отправки письма
-        if (!dbRes?.email_code || !mailRes || !mailRes?.isAccepted) {
+        if (!mailRes || !mailRes?.isAccepted) {
             return res.status(500).json({
                 message: 'Server error: code send failed',
+                errors: {
+                    email_code: 'Произошла ошибка при отправке письма на почту',
+                },
             });
         }
 

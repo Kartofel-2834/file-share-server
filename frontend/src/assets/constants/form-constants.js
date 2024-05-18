@@ -1,19 +1,39 @@
 // Utils
 import { strValidate } from '@/assets/utils/validate-utils.js';
 
-export const loginFields = {
-    login: {
-        validate: value => strValidate(value, ['required']),
+export const loginField = {
+    validate: value => strValidate(value, ['required']),
+    attributes: {
+        placeholder: 'Логин',
+    },
+};
+
+export const passwordField = {
+    type: 'password',
+    validate: value => strValidate(value, ['required']),
+    attributes: {
+        placeholder: 'Пароль',
+    },
+};
+
+// Login Fields
+export const loginFormFields = {
+    login: loginField,
+    password: passwordField,
+};
+
+// Password Recovery Fields
+export const recoveryFormFields = {
+    login: loginField,
+
+    new_password: {
+        ...passwordField,
         attributes: {
-            placeholder: 'Логин',
+            placeholder: 'Новый пароль',
         },
     },
 
-    password: {
-        type: 'password',
-        validate: value => strValidate(value, ['required']),
-        attributes: {
-            placeholder: 'Пароль',
-        },
+    code: {
+        type: 'code',
     },
 };
