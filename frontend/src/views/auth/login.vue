@@ -42,7 +42,7 @@ import { useRouter } from 'vue-router';
 import { loginFormFields } from '@/assets/constants/form-constants.js';
 
 // Utils
-import { statusMessages, parseError } from '@/assets/utils/request-utils';
+import { statusMessages } from '@/assets/utils/request-utils';
 
 // Composables
 import { useApi } from '@/composables/api.js';
@@ -79,9 +79,7 @@ async function onSubmit(values) {
         window.localStorage.setItem('accessToken', token);
         $router.push('/');
     } catch (err) {
-        const { title, description } = parseError(err);
-        
-        $notify.error(title, description);
+        $notify.parseError(err);
         console.warn('[LoginPage/onSubmit] request failed: ', err);
     } finally {
         isLoading.value = false;

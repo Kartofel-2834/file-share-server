@@ -8,6 +8,9 @@ function checkRoleAccess(req, res, next) {
 
     return res.status(403).json({
         message: `Request error: This action available only for ${allowedRoles.join(', ')}`,
+        errors: {
+            token: 'Отказано в доступе',
+        },
     });
 }
 

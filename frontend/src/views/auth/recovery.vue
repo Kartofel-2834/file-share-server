@@ -47,9 +47,6 @@ import { useRouter } from 'vue-router';
 import { recoveryFormFields } from '@/assets/constants/form-constants';
 import { emailSendMessages, passwordChangeMessages } from '@/assets/constants/message-constants';
 
-// Utils
-import { parseError } from '@/assets/utils/request-utils';
-
 // Composables
 import { useApi } from '@/composables/api';
 import { useAxios } from '@/composables/axios';
@@ -127,9 +124,7 @@ async function onFormSubmit(values) {
             await sendEmailCode();
         }
     } catch (err) {
-        const { title, description } = parseError(err);
-        
-        $notify.error(title, description);
+        $notify.parseError(err);
         console.warn('[RecoveryPage/onFormSubmit] request failed: ', err);
     } finally {
         isLoading.value = false;

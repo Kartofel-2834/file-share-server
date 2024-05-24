@@ -1,8 +1,12 @@
 // Constants
-import { $authApi } from '@/assets/constants/api-constants';
+import {
+    $authApi,
+    $filesApi,
+} from '@/assets/constants/api-constants';
 
 const $api = {
     auth: $authApi,
+    files: $filesApi,
 };
 
 export function useApi() {

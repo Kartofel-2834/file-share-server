@@ -13,6 +13,9 @@ export default function authMiddleware(req, res, next) {
 
     const prohibitAccess = () => res.status(403).json({
         message: 'Request error: Access denied',
+        errors: {
+            token: 'Отказано в доступе',
+        },
     });
 
     try {

@@ -9,7 +9,7 @@ export const apiUrl = import.meta.env.DEV ?
     import.meta.env.VITE_BUILD_MODE_API_URL;
 
 export function useAxios() {
-    const router = useRouter();
+    const $router = useRouter();
     const $axios = axios.create({
         baseURL: apiUrl,
         timeout: 5000,
@@ -18,11 +18,34 @@ export function useAxios() {
         },
     });
 
+    // Вставка токена доступа в хедеры запросов
+    $axios.interceptors.request.use(config => {
+        if (!window) {
+            return config;
+        }
+
+        const token = window?.localStorage?.getItem('accessToken');
+        
+        if (!token?.length) {
+            return config;
+        }
+
+        const updatedConfig = { ...config };
+        updatedConfig.headers.Authorization = `Bearer ${token}`;
+
+        return updatedConfig;
+    });
+
+    // При отказе в доступе со стороны сервера
     $axios.interceptors.response.use(res => res, error => {
         const status = error?.response?.status;
 
         if (status === 403) {
-            router.push('/auth/login/');
+            $router.push('/auth/login/');
+
+            if (window) {
+                window.localStorage.removeItem('accessToken');
+            }
         }
 
         return Promise.reject({
