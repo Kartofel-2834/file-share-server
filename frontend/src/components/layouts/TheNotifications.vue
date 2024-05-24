@@ -32,32 +32,33 @@ import { useNotificationsStore } from '@/stores/notifications';
 // Components
 import Notification from '@/components/layouts/notifications/Notification.vue';
 
-const notifications = useNotificationsStore();
 const $style = useCssModule();
+
+const $notifications = useNotificationsStore();
 
 // Computed
 const updatedNotifications = computed(() => {
-    if (!Array.isArray(notifications.list)) {
+    if (!Array.isArray($notifications.list)) {
         return [];
     }
 
-    if (notifications.list.length <= 5) {
-        return notifications.list;
+    if ($notifications.list.length <= 5) {
+        return $notifications.list;
     }
 
-    return notifications.list.slice(notifications.list.length - 5);
+    return $notifications.list.slice($notifications.list.length - 5);
 });
 
 // Methods
 function onNotificationClick() {
-    notifications.pop();
+    $notifications.pop();
 }
 
 function getNotificationClassList(index) {
     return {
-        [$style._first]: index === notifications.list.length - 1,
-        [$style._second]: index === notifications.list.length - 2,
-        [$style._third]: index === notifications.list.length - 3,
+        [$style._first]: index === $notifications.list.length - 1,
+        [$style._second]: index === $notifications.list.length - 2,
+        [$style._third]: index === $notifications.list.length - 3,
     };
 }
 </script>

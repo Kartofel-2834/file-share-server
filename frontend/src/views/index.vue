@@ -1,6 +1,14 @@
 <template>
     <div :class="$style.IndexPage">
-        INDEX {{ files }}
+        {{ $user.data }}
+
+        <VButtonIcon
+            v-if="!$user.isSimpleUser"
+            :class="$style.addFileButton"
+            size="size-72"
+            icon="plus"
+            icon-size="size-36"
+        />
     </div>
 </template>
 
@@ -12,12 +20,20 @@ export default {
 
 <script setup>
 // Vue
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, defineAsyncComponent } from 'vue';
+
+// Store
+import { useUserStore } from '@/stores/user';
 
 // Composables
 import { useApi } from '@/composables/api.js';
 import { useAxios } from '@/composables/axios.js';
 import { useNotify } from '@/composables/notify.js';
+
+// UI Components
+const VButtonIcon = defineAsyncComponent(() => import('@/components/ui/button/VButtonIcon.vue'));
+
+const $user = useUserStore();
 
 const $api = useApi();
 const $axios = useAxios();
@@ -50,6 +66,13 @@ async function fetchFiles() {
 
 <style lang="scss" module>
     .IndexPage {
-       //
+       position: relative;
+       min-height: 100dvh;
+    }
+
+    .addFileButton {
+        position: absolute;
+        right: 4rem;
+        bottom: 4rem;
     }
 </style>

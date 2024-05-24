@@ -14,11 +14,33 @@ import DefaultRouter from '#routers/defaultRouter.js';
 // Mailer
 import mailer from '#mailer/index.js';
 
+// Middlewares
+import authMiddleware from '#middlewares/authMiddleware.js';
+
 const jwtSecret = process.env.JWT_SECRET;
+
+
+function prepareUserToSend(userData) {
+    const updatedUser = { ...userData };
+
+    delete updatedUser.password;
+    delete updatedUser.email_code;
+    delete updatedUser.email;
+
+    return updatedUser;
+}
 
 class AuthRouter extends DefaultRouter {
     init() {
         // Биндинг листенеров
+        this.bindRoute({
+            url: '/me/',
+            method: 'GET',
+            location: 'auth/me - GET',
+            listener: (req, res) => this.getUserInfo(req, res),
+            middlewares: [authMiddleware],
+        });
+
         this.bindRoute({
             url: '/login/',
             method: 'POST',
@@ -68,6 +90,7 @@ class AuthRouter extends DefaultRouter {
         }
 
         res.status(202).json({
+            user: prepareUserToSend(user),
             token: this._createJWT({
                 id: user.id,
                 login: user.login,
@@ -174,11 +197,31 @@ class AuthRouter extends DefaultRouter {
         res.status(201).json(user);
     }
 
+    // Получить информацию о пользователе по токену доступа
+    async getUserInfo(req, res) {
+        const { id: userId } = req.tokenData;
+
+        if (!userId) {
+            return;
+        }
+
+        const user = await usersTable.getById(userId);
+
+        if (!user) {
+            return res.status(404).json({
+                message: 'Request error: user with that id not found',
+            });
+        }
+
+        const updatedUser = prepareUserToSend(user);
+
+        res.status(200).json(updatedUser);
+    }
+
     // Создание JWT токена
     _createJWT(payload = {}, options = {}) {
         return jwt.sign(payload, jwtSecret, {
-            // expiresIn: '24h',
-            expiresIn: 20,
+            expiresIn: '24h',
             ...options,
         });
     }

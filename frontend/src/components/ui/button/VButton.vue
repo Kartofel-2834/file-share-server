@@ -64,6 +64,8 @@ const $props = defineProps({
         validator: v => [
             'button',
             'div',
+            'a',
+            'router-link',
         ].includes(v),  
     },
 

@@ -44,6 +44,9 @@ import { loginFormFields } from '@/assets/constants/form-constants.js';
 // Utils
 import { statusMessages } from '@/assets/utils/request-utils';
 
+// Store
+import { useUserStore } from '@/stores/user';
+
 // Composables
 import { useApi } from '@/composables/api.js';
 import { useAxios } from '@/composables/axios.js';
@@ -55,6 +58,8 @@ const AuthWrapper = defineAsyncComponent(() => import('@/components/pages/auth/A
 // UI Components
 const VForm = defineAsyncComponent(() => import('@/components/ui/form/VForm.vue'));
 const VLinkLine = defineAsyncComponent(() => import('@/components/ui/link/VLinkLine.vue'));
+
+const $user = useUserStore();
 
 const $api = useApi();
 const $axios = useAxios();
@@ -70,13 +75,16 @@ async function onSubmit(values) {
         isLoading.value = true;
 
         const res = await $axios.post($api.auth.login, values);
+        
         const token = res?.data?.token;
+        const newUser = res?.data?.user;
 
         if (!token?.length) {
             return $notify.error(statusMessages[500], 'отсутствует токен доступа');
         }
 
         window.localStorage.setItem('accessToken', token);
+        $user.set(newUser);
         $router.push('/');
     } catch (err) {
         $notify.parseError(err);

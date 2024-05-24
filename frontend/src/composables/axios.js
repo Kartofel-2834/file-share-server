@@ -42,10 +42,6 @@ export function useAxios() {
 
         if (status === 403) {
             $router.push('/auth/login/');
-
-            if (window) {
-                window.localStorage.removeItem('accessToken');
-            }
         }
 
         return Promise.reject({
