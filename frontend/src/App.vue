@@ -2,6 +2,8 @@
     <main id="app">
         <RouterView />
 
+        <TheModal />
+
         <TheNotifications />
     </main>
 </template>
@@ -18,4 +20,5 @@ import { defineAsyncComponent } from 'vue';
 
 // Components
 const TheNotifications = defineAsyncComponent(() => import('@/components/layouts/TheNotifications.vue'));
+const TheModal = defineAsyncComponent(() => import('@/components/layouts/TheModal.vue'));
 </script>

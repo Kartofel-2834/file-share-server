@@ -37,3 +37,14 @@ export const recoveryFormFields = {
         type: 'code',
     },
 };
+
+// File add fields
+export const fileAddFields = {
+    name: {
+        type: 'text',
+        validate: value => strValidate(value, ['required']),
+        attributes: {
+            placeholder: 'Название файла',
+        },
+    },
+};

@@ -10,11 +10,27 @@
 }
 
 // Fade up
+.fade-right-left-enter-active,
+.fade-right-left-leave-active,
+.fade-left-right-enter-active,
+.fade-left-right-leave-active,
 .fade-up-enter-active,
 .fade-up-leave-active {
     transition:
         opacity $default-transition,
         transform $default-transition;
+}
+
+.fade-right-left-enter-from,
+.fade-right-left-leave-to {
+    opacity: 0;
+    transform: translateX(4rem);
+}
+
+.fade-left-right-enter-from,
+.fade-left-right-leave-to {
+    opacity: 0;
+    transform: translateX(-4rem);
 }
 
 .fade-up-enter-from,
@@ -23,6 +39,10 @@
     transform: translateY(4rem);
 }
 
+.fade-right-left-enter-to,
+.fade-right-left-leave-from,
+.fade-left-right-enter-to,
+.fade-left-right-leave-from,
 .fade-up-enter-to,
 .fade-up-leave-from {
     opacity: 1;

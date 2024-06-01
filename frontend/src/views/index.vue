@@ -1,13 +1,12 @@
 <template>
     <div :class="$style.IndexPage">
-        {{ $user.data }}
-
         <VButtonIcon
             v-if="!$user.isSimpleUser"
             :class="$style.addFileButton"
             size="size-72"
             icon="plus"
             icon-size="size-36"
+            @click="openModal"
         />
     </div>
 </template>
@@ -24,16 +23,21 @@ import { onMounted, ref, defineAsyncComponent } from 'vue';
 
 // Store
 import { useUserStore } from '@/stores/user';
+import { useModalStore } from '@/stores/modal';
 
 // Composables
 import { useApi } from '@/composables/api.js';
 import { useAxios } from '@/composables/axios.js';
 import { useNotify } from '@/composables/notify.js';
 
+// Modals
+const ModalFileAdd = defineAsyncComponent(() => import('@/components/layouts/modal/ModalFileAdd.vue'));
+
 // UI Components
 const VButtonIcon = defineAsyncComponent(() => import('@/components/ui/button/VButtonIcon.vue'));
 
 const $user = useUserStore();
+const $modal = useModalStore();
 
 const $api = useApi();
 const $axios = useAxios();
@@ -61,6 +65,12 @@ async function fetchFiles() {
     } finally {
         isLoading.value = false;
     }
+}
+
+function openModal() {
+    $modal.open({
+        component: ModalFileAdd,
+    });
 }
 </script>
 
