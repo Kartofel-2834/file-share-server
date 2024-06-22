@@ -5,7 +5,7 @@ import { defineStore } from 'pinia';
 import { ref, shallowRef } from 'vue';
 
 export const useModalStore = defineStore('modal', () => {
-    const modalComponent = ref(null);
+    const modalComponent = shallowRef(null);
     const modalWrapper = shallowRef(null);
 
     const isOpen = ref(false);
@@ -16,8 +16,6 @@ export const useModalStore = defineStore('modal', () => {
 
     // Methods 
     function open({ component = null, attributes = {}, config = {} }) {
-        console.log(component);
-
         isOpen.value = true;
         modalComponent.value = component;
         
@@ -40,7 +38,6 @@ export const useModalStore = defineStore('modal', () => {
         data,
         isOpen,
         component: modalComponent,
-        modalComponent,
         wrapper: modalWrapper,
 
         open,

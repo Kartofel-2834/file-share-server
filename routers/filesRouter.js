@@ -86,6 +86,9 @@ class FilesRouter extends DefaultRouter {
         if (!req.file || !req.body?.name) {
             return res.status(400).json({
                 message: 'Request error: file and name must be provided',
+                errors: {
+                    file: 'Файл и его название должны быть предоставлены',
+                },
             });
         }
 

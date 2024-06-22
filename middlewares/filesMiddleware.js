@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
     },
 });
 
-const limits = { fileSize: 2 * 1024 * 1024 };
+const limits = { fileSize: 24 * 1024 * 1024 };
 
 const fileHandler = multer({ storage, limits });
   

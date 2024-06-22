@@ -1,7 +1,8 @@
-import { gsap } from 'gsap/dist/gsap.js';
-import { ScrollToPlugin } from 'gsap/dist/ScrollToPlugin.js';
-
-gsap.registerPlugin(ScrollToPlugin);
+export function sleep(delay = 0) {
+    return new Promise(res => {
+        setTimeout(res, delay);
+    });
+}
 
 export function lockBody() {
     console.warn('lockBody устарел, используйте disablePageScroll. Документация: https://github.com/FL3NKEY/scroll-lock/blob/master/README.RU.md');
@@ -14,23 +15,17 @@ export function unlockBody() {
 export function scrollTo(id = false, offset = 0, force = false) {
     const target = document.getElementById(id || '__nuxt');
 
-    if (target) {
-        const position = target.getBoundingClientRect().top + window.pageYOffset;
-
-        if (force) {
-            window.scroll({
-                top: position - offset,
-                left: 0,
-                behavior: 'instant',
-            });
-        } else {
-            gsap.to(window, {
-                duration: .5,
-                scrollTo:
-                    { y: position, offsetY: offset },
-            });
-        }
+    if (!target) {
+        return;
     }
+
+    const position = target.getBoundingClientRect().top + window.pageYOffset;
+
+    window.scroll({
+        top: position - offset,
+        left: 0,
+        behavior: 'instant',
+    });
 }
 
 export function debounce(func, wait, immediate) {

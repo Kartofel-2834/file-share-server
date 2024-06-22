@@ -9,4 +9,6 @@ export const $authApi = {
 // Files
 export const $filesApi = {
     list: '/files/',
+    id: id => `/files/${id}/`,
+    view: id => `/files/${id}/view/`,
 };

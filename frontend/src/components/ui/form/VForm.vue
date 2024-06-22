@@ -34,6 +34,16 @@
                         @blur="onBlur(field)"
                     />
 
+                    <!-- Code field -->
+                    <VInputFile
+                        v-if="fields?.[field]?.type === 'file'"            
+                        :value="values?.[field]"
+                        :error="Boolean(errors?.[field])"
+                        v-bind="getFieldAttributes(field)"
+                        @input="onInput($event, field)"
+                        @blur="onBlur(field)"
+                    />
+
                     <!-- Password field -->
                     <VInputPassword
                         v-else-if="fields?.[field]?.type === 'password'"            
@@ -90,12 +100,15 @@ export default {
 // Vue
 import { ref, computed, watch, defineAsyncComponent, onMounted } from 'vue';
 
-// Components
+// UI Components
 const VFormHint = defineAsyncComponent(() => import('@/components/ui/form/VFormHint.vue'));
 const VButton = defineAsyncComponent(() => import('@/components/ui/button/VButton.vue'));
+
+// Fields
 const VInput = defineAsyncComponent(() => import('@/components/ui/input/VInput.vue'));
 const VInputPassword = defineAsyncComponent(() => import('@/components/ui/input/VInputPassword.vue'));
 const VInputCode = defineAsyncComponent(() => import('@/components/ui/input/VInputCode.vue'));
+const VInputFile = defineAsyncComponent(() => import('@/components/ui/input/VInputFile.vue'));
 
 const $props = defineProps({
     values: {

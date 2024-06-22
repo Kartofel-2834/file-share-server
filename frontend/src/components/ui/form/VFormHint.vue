@@ -1,5 +1,5 @@
 <template>
-    <div :class="[$style.FormHint, 'v-form-hint']">
+    <div :class="[$style.VFormHint, 'v-form-hint']">
         <!-- Label -->
         <slot name="label">
             <div
@@ -73,7 +73,7 @@ defineProps({
 
 <style lang="scss" module>
     .VFormHint {
-        //
+        overflow: hidden;
     }
 
     .descriptionWrapper {

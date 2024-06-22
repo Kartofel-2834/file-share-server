@@ -74,6 +74,7 @@ const $props = defineProps({
         default: 'primary',
         validator: v => [
             'primary',
+            'error',
         ].includes(v),
     },
 
@@ -156,6 +157,13 @@ const classList = computed(() => ({
         }
 
         /* --- Colors --- */
+        &._primary,
+        &._error {
+            &._disabled {
+                background-color: $base-300;
+            }
+        }
+
         &._primary {
             background-color: $primary;
             color: $white;
@@ -167,10 +175,11 @@ const classList = computed(() => ({
             &:active {
                 background-color: $primary-active;
             }
+        }
 
-            &._disabled {
-                background-color: $base-300;
-            }
+        &._error {
+            background-color: $error-500;
+            color: $white;
         }
 
         /* --- Modificators --- */

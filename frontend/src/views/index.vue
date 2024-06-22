@@ -26,9 +26,9 @@ import { useUserStore } from '@/stores/user';
 import { useModalStore } from '@/stores/modal';
 
 // Composables
-import { useApi } from '@/composables/api.js';
-import { useAxios } from '@/composables/axios.js';
-import { useNotify } from '@/composables/notify.js';
+import { useApi } from '@/composables/api';
+import { useAxios } from '@/composables/axios';
+import { useNotify } from '@/composables/notify';
 
 // Modals
 const ModalFileAdd = defineAsyncComponent(() => import('@/components/layouts/modal/ModalFileAdd.vue'));

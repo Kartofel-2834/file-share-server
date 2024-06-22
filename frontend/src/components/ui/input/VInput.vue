@@ -120,6 +120,7 @@ function onChange(event) {
         border: 2px solid $base-300;
         font-size: 1.6rem;
         font-weight: 500;
+        cursor: text;
         transition:
             opacity $default-transition,
             border-color $default-transition;
@@ -166,6 +167,7 @@ function onChange(event) {
         font-weight: inherit;
 
         &::placeholder {
+            color: $base-400;
             user-select: none;
         }
     }
