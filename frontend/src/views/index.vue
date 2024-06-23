@@ -71,6 +71,8 @@ async function fetchFiles() {
         const { data } = await $axios.get($api.files.list, {
             params: {
                 limit: 5,
+                order_by: 'created_at',
+                sort_direction: 0,
             },
         });
         

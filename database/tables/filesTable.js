@@ -7,8 +7,11 @@ import TableManager from '#database/tableManager.js';
 // Logger
 import logger from '#logger/index.js';
 
+// Database
+import db from '#database/db.js';
+
 // Utils
-import { getValuesMarkers } from '#utils/dbUtils.js';
+import { getValuesMarkers, convertQueryParts } from '#utils/dbUtils.js';
 
 const validateRules = {
     name: ['required'],
@@ -24,7 +27,10 @@ class FilesTableManager extends TableManager {
         return result?.[0] ?? null;
     }
 
-    getFiles(filters, values) {
+    // TODO: зарефакторить менеджеры таблиц и квери так, чтобы можно было делать их более кастомными
+    async getFiles(filters, values) {
+        const onError = this._queryCheck('select', 'file select failed', 'select');
+
         const targets = [
             'distinct on(files.id) files.*',
             'users.name as owner_name',
@@ -37,10 +43,20 @@ class FilesTableManager extends TableManager {
             'left join': 'history h_view ON h_view.file_id = files.id AND h_view.type = \'view\'',
             'LEFT JOIN': 'history h_download ON h_download.file_id = files.id AND h_download.type = \'download\'',
             join: 'users on files.owner_id=users.id',
-            ...(filters || {}),
         };
 
-        return this.select(targets.join(', '), query, values || []);
+        try {
+            const withCommand = this.$query.select(targets.join(', '), query);
+            const filtersQuery = convertQueryParts(filters || {});
+            const command = `WITH result as (${withCommand}) SELECT * FROM result ${filtersQuery}`;
+
+            const result = await db.query(command, values || []);
+            
+            return Array.isArray(result?.rows) ? result.rows : [];
+        } catch (err) {
+            onError(err);
+            throw err;
+        }
     }
 
     async createFile(payload) {
