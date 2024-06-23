@@ -187,6 +187,14 @@ const classList = computed(() => ({
         &._error {
             background-color: $error-500;
             color: $white;
+
+            &:hover:not(:active) {
+                background-color: $error-400;
+            }
+
+            &:active {
+                background-color: $error-300;
+            }
         }
 
         /* --- Modificators --- */

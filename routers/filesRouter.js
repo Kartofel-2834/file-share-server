@@ -2,6 +2,9 @@
 import fs from 'fs/promises';
 import path from 'path';
 
+// Libraries
+import jwt from 'jsonwebtoken';
+
 // Default router
 import DefaultRouter from '#routers/defaultRouter.js';
 
@@ -15,17 +18,18 @@ import filesTable from '#database/tables/filesTable.js';
 import historyTable from '#database/tables/historyTable.js';
 import { schema as filesSchema } from '#database/queries/filesQueries.js';
 
+// Enviroment
+const jwtSecret = process.env.JWT_SECRET;
+
 class FilesRouter extends DefaultRouter {
     init() {
-        // Промежуточные обработки
-        this.router.use(authMiddleware);
-
         // Биндинг листенеров
         this.bindRoute({
             url: '/:id',
             method: 'GET',
             location: 'files/:id - GET',
             listener: (req, res) => this.getFile(req, res),
+            middlewares: [authMiddleware],
         });
 
         this.bindRoute({
@@ -33,6 +37,7 @@ class FilesRouter extends DefaultRouter {
             method: 'GET',
             location: 'files - GET',
             listener: (req, res) => this.getFilesList(req, res),
+            middlewares: [authMiddleware],
         });
 
         this.bindRoute({
@@ -41,6 +46,7 @@ class FilesRouter extends DefaultRouter {
             location: 'files - POST',
             listener: (req, res) => this.addFile(req, res),
             middlewares: [
+                authMiddleware,
                 filesMiddleware('file'),
                 roleAccessMiddleware(['admin', 'moderator']),
             ],
@@ -52,6 +58,7 @@ class FilesRouter extends DefaultRouter {
             location: 'files - DELETE',
             listener: (req, res) => this.deleteFilesList(req, res),
             middlewares: [
+                authMiddleware,
                 roleAccessMiddleware(['admin', 'moderator']),
             ],
         });
@@ -62,6 +69,7 @@ class FilesRouter extends DefaultRouter {
             location: 'files/:id - DELETE',
             listener: (req, res) => this.deleteFile(req, res),
             middlewares: [
+                authMiddleware,
                 roleAccessMiddleware(['admin', 'moderator']),
             ],
         });
@@ -78,6 +86,7 @@ class FilesRouter extends DefaultRouter {
             method: 'GET',
             location: 'files/:id/view - GET',
             listener: (req, res) => this.viewFile(req, res),
+            middlewares: [authMiddleware],
         });
     }
 
@@ -207,19 +216,34 @@ class FilesRouter extends DefaultRouter {
     // Отправка файла для скачивания
     async downloadFile(req, res) {
         const fileId = this.checkIdParam(req, res);
-        const { id: userId } = req?.tokenData || {};
+        
+        const token = req?.query?.token;
+        const tokenData = jwt.verify(token, jwtSecret);
 
         if (!fileId) {
             return;
         }
 
+        if (!tokenData?.id) {
+            return res.status(403).json({
+                message: 'Access denied',
+                errors: {
+                    file: 'Отказано в доступе',
+                },
+            });
+        }
+
         const fileInfo = await filesTable.getById(fileId);
-        await historyTable.add({
-            type: 'download',
-            user_id: userId,
+        
+        const madeHistoryRecord = type => historyTable.add({
+            type,
+            user_id: tokenData?.id,
             file_id: fileId,
         });
 
+        await madeHistoryRecord('download');
+        await madeHistoryRecord('view');
+    
         if (!fileInfo?.path) {
             return res.status(500).json({
                 message: 'Server error: file path not found',

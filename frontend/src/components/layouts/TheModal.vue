@@ -20,12 +20,14 @@
             <component
                 :is="wrapper"
                 v-if="$modal.isOpen && wrapper"
+                v-bind="wrapperAttributes"
                 :class="$style.wrapper"
             >
                 <!-- Modal content -->
                 <component
                     :is="$modal.component"
                     v-if="$modal?.component"
+                    v-bind="modalAttributes"
                     :class="$style.modal"
                 />
             </component>
@@ -63,6 +65,8 @@ onUnmounted(() => {
 
 // Computed
 const wrapper = computed(() => $modal.wrapper || ModalWrapper);
+const wrapperAttributes = computed(() => $modal?.data?.config?.attributes || {});
+const modalAttributes = computed(() => $modal?.data?.attributes || {});
 
 const currentStyles = computed(() => ({
     zIndex: $modal.data?.config?.zIndex || 100,

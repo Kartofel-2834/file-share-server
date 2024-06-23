@@ -6,6 +6,7 @@ import { ref, shallowRef } from 'vue';
 
 // Modal config
 // - wrapper: Компонент обертка для модалки | по-умолчанию: ModalWrapper
+// - attributes: атрибуты прокидываемые в wrapper модалки | по-умолчанию: {}
 // - zIndex: z-index модалки | по-умолчанию: 100
 
 export const useModalStore = defineStore('modal', () => {

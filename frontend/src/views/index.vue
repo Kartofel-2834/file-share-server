@@ -68,7 +68,11 @@ async function fetchFiles() {
     isLoading.value = true;
 
     try {
-        const { data } = await $axios.get($api.files.list);
+        const { data } = await $axios.get($api.files.list, {
+            params: {
+                limit: 5,
+            },
+        });
         
         files.value = Array.isArray(data) ? data : [];
     } catch (err) {

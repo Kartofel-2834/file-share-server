@@ -26,7 +26,7 @@ class FilesTableManager extends TableManager {
 
     getFiles(filters, values) {
         const targets = [
-            'files.*',
+            'distinct on(files.id) files.*',
             'users.name as owner_name',
             'users.surname as owner_surname',
             'CASE WHEN h_view.type IS NOT NULL THEN true ELSE false END as is_viewed',

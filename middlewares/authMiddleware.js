@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 // Logger
 import logger from '#logger/index.js';
 
+// Enviroment
 const jwtSecret = process.env.JWT_SECRET;
 
 export default function authMiddleware(req, res, next) {

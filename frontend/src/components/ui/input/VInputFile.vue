@@ -184,6 +184,10 @@ function onChange(event) {
         transition:
             color $default-transition,
             border-color $default-transition;
+
+        @include respond-to(mobile) {
+            font-size: 16px;
+        }
     }
 
     .text {

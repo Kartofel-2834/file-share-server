@@ -27,6 +27,7 @@
             <tr
                 v-for="(item, index) of data"
                 :key="`VTable_row_${getItemKey(item, index)}`"
+                class="v-table-row"
             >
                 <!-- Cell -->
                 <slot
@@ -39,6 +40,7 @@
                     <VTableCell
                         :key="`VTable_cell_${getItemKey(item, index)}_field`"
                         v-bind="getCellAttributes(field)"
+                        :class="['v-table-cell', `v-table-cell_${field}`]"
                     >
                         <slot
                             :name="`${field}`"

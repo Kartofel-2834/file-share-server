@@ -72,6 +72,7 @@ function getNotificationClassList(index) {
         position: fixed;
         right: 2rem;
         bottom: 2rem;
+        z-index: 200;
         transform: translateY(-100px);
 
         /* --- Transition --- */
