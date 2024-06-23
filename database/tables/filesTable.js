@@ -19,6 +19,30 @@ class FilesTableManager extends TableManager {
         super('files', filesQueries, validateRules);
     }
 
+    async getFileById(id) {
+        const result = await this.getFiles({ where: 'files.id=$1' }, [id]);
+        return result?.[0] ?? null;
+    }
+
+    getFiles(filters, values) {
+        const targets = [
+            'files.*',
+            'users.name as owner_name',
+            'users.surname as owner_surname',
+            'CASE WHEN h_view.type IS NOT NULL THEN true ELSE false END as is_viewed',
+            'CASE WHEN h_download.type IS NOT NULL THEN true ELSE false END as is_downloaded',
+        ];
+
+        const query = {
+            'left join': 'history h_view ON h_view.file_id = files.id AND h_view.type = \'view\'',
+            'LEFT JOIN': 'history h_download ON h_download.file_id = files.id AND h_download.type = \'download\'',
+            join: 'users on files.owner_id=users.id',
+            ...(filters || {}),
+        };
+
+        return this.select(targets.join(', '), query, values || []);
+    }
+
     async createFile(payload) {
         const result = await this.add(payload);
         

@@ -129,13 +129,15 @@ class FilesRouter extends DefaultRouter {
             return;
         }
 
-        const file = await filesTable.getById(fileId);
+        const file = await filesTable.getFileById(fileId);
 
         if (!file) {
             return res.status(404).json({
                 message: 'Request error: file with that id not found',
             });
         }
+
+        delete file?.path;
 
         res.status(200).json(file);
     }
@@ -144,7 +146,13 @@ class FilesRouter extends DefaultRouter {
     async getFilesList(req, res) {
         const { filters, values } = this.getFilters(req, filesSchema);
 
-        const result = await filesTable.select('*', filters || {}, values || []);
+        let result = await filesTable.getFiles(filters, values);
+        result = result.map(file => {
+            const updatedFile = { ...file };
+            delete updatedFile?.path;
+            
+            return updatedFile;
+        });
 
         res.status(200).json(result);
     }

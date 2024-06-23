@@ -4,6 +4,10 @@ import { defineStore } from 'pinia';
 // Vue
 import { ref, shallowRef } from 'vue';
 
+// Modal config
+// - wrapper: Компонент обертка для модалки | по-умолчанию: ModalWrapper
+// - zIndex: z-index модалки | по-умолчанию: 100
+
 export const useModalStore = defineStore('modal', () => {
     const modalComponent = shallowRef(null);
     const modalWrapper = shallowRef(null);

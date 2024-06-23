@@ -83,6 +83,7 @@ const $props = defineProps({
         default: 'size-32',
         validator: v => [
             'size-32',
+            'size-36',
             'size-48',
             'size-56',
         ].includes(v),
@@ -141,6 +142,12 @@ const classList = computed(() => ({
         &._size-32 {
             font-size: 1.4rem;
             height: 3.2rem;
+            padding: 0 2rem;
+        }
+
+        &._size-36 {
+            font-size: 1.4rem;
+            height: 3.6rem;
             padding: 0 2rem;
         }
 

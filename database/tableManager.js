@@ -104,7 +104,7 @@ export default class TableManager {
         try {
             const command = this.$query.select(selection, queryParts);
             const result = await db.query(command, values);
-
+            
             return Array.isArray(result?.rows) ? result.rows : [];
         } catch (err) {
             onError(err);

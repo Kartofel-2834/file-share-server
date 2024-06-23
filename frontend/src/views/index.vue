@@ -1,5 +1,14 @@
 <template>
     <div :class="$style.IndexPage">
+        <section :class="$style.filesList">
+            <transition name="fade" appear>
+                <TableFiles
+                    :class="$style.table"
+                    :data="files"
+                />
+            </transition>
+        </section>
+
         <VButtonIcon
             v-if="!$user.isSimpleUser"
             :class="$style.addFileButton"
@@ -35,6 +44,9 @@ const ModalFileAdd = defineAsyncComponent(() => import('@/components/layouts/mod
 
 // UI Components
 const VButtonIcon = defineAsyncComponent(() => import('@/components/ui/button/VButtonIcon.vue'));
+
+// Components
+const TableFiles = defineAsyncComponent(() => import('@/components/common/tables/custom/TableFiles.vue'));
 
 const $user = useUserStore();
 const $modal = useModalStore();
@@ -81,8 +93,19 @@ function openModal() {
     }
 
     .addFileButton {
-        position: absolute;
+        position: fixed;
         right: 4rem;
         bottom: 4rem;
+    }
+
+    .filesList {
+        overflow: hidden;
+        width: 100%;
+        padding: 4rem;
+    }
+
+    .table {
+        width: 100%;
+        max-width: 100%;
     }
 </style>

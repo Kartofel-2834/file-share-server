@@ -1,5 +1,27 @@
 export const leadingZero = num => num < 10 ? `0${num}` : num;
 
+export function formatFileSize(sizeInBytes = 0, fractionLen = 1) {    
+    const mb = roundTo(sizeInBytes / (1024 ** 2), fractionLen);
+
+    if (mb > 1) {
+        return `${mb} Mb`;
+    }
+
+    const kb = roundTo(sizeInBytes / 1024, fractionLen);
+    
+    if (kb > 1) {
+        return `${kb} Kb`;
+    }
+
+    return `${sizeInBytes} bytes`;
+}
+
+export function roundTo(someNumber, fractionLen = 1) {
+    const divider = 10 ** fractionLen; 
+
+    return Math.floor(someNumber * divider) / divider;
+}
+
 export function splitThousands(val) {
     if (isNaN(val)) {
         return val;
